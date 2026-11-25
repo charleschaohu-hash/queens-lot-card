@@ -1,0 +1,14 @@
+# raw API responses and generated cards stay local
+cache/
+cards/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
