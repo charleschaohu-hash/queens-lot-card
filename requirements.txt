@@ -1,0 +1,4 @@
+requests>=2.31
+# Optional renderers (the tool falls back gracefully if missing):
+playwright>=1.45        # PNG + PDF via headless Chromium: run `playwright install chromium` once
+weasyprint>=62          # PDF-only fallback when playwright is unavailable

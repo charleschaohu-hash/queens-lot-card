@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17-08 149TH STREET — Lot Profile</title><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f2f3f5; font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;
+       color:#1f2329; padding:16px; }
+.card { max-width:560px; margin:0 auto; background:#fff; border:1px solid #dfe2e8;
+        border-radius:12px; padding:24px; }
+.section { border-top:1px solid #eceef1; margin-top:18px; padding-top:14px; }
+.sec-title { font-size:13px; color:#8a919c; letter-spacing:2px; margin-bottom:10px;
+             text-transform:uppercase; }
+.header .addr { font-size:20px; font-weight:700; }
+.header .sub { font-size:13px; color:#5c6570; margin-top:4px; }
+.badge { display:inline-block; background:#1f2329; color:#fff; font-size:12px;
+         padding:2px 8px; border-radius:4px; margin-right:6px; vertical-align:1px; }
+.badge.red { background:#a12622; }
+.badge.yellow { background:#b8860b; }
+.dob-banner { background:#fdebea; border:1px solid #f0b9b6; color:#a12622;
+              font-size:13px; font-weight:700; border-radius:6px; padding:6px 10px; margin-bottom:8px; }
+.dob-banner.y { background:#fff7e6; border-color:#ffe1a8; color:#8a5a00; }
+.dob-item { font-size:13px; padding:3px 0 3px 12px; border-left:3px solid #f0b9b6; margin:4px 0; }
+.bbl { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:13px; color:#5c6570; }
+.row { display:flex; justify-content:space-between; font-size:14px; padding:3px 0; }
+.row .k { color:#8a919c; flex-shrink:0; margin-right:12px; }
+.row .v { text-align:right; }
+.warnline { background:#fff7e6; border:1px solid #ffe1a8; color:#8a5a00;
+            font-size:13px; border-radius:6px; padding:6px 10px; margin-top:8px;
+            margin-bottom:8px; }
+.provenance { font-size:11.5px; color:#aab0b8; margin-bottom:8px; }
+.checks { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.chk { border-radius:6px; padding:8px 10px; font-size:13px; }
+.chk .t { font-size:12px; opacity:.75; }
+.chk .r { font-weight:600; margin-top:2px; }
+.chk.green { background:#eaf7ec; color:#1e6b2e; }
+.chk.yellow { background:#fff7e6; color:#8a5a00; }
+.chk.red { background:#fdebea; color:#a12622; }
+.nums { display:flex; gap:8px; margin-bottom:12px; }
+.num { flex:1; border:1px solid #eceef1; border-radius:8px; padding:10px 8px; text-align:center; }
+.num .big { font-size:19px; font-weight:700; }
+.num .lab { font-size:11px; color:#8a919c; margin-top:3px; line-height:1.5; }
+.num.hl { background:#e8f1ff; border-color:#bcd6ff; }
+.num.hl .big { color:#1250b8; }
+.num.over { background:#fff3e0; border-color:#ffcc80; }
+.num.over .big { color:#b45309; }
+.plist { font-size:13.5px; line-height:1.8; }
+.plist .mk { display:inline-block; width:1.4em; font-weight:700; }
+.mk.ok { color:#1e6b2e; } .mk.no { color:#a12622; } .mk.q { color:#8a919c; }
+.owner-tag { display:inline-block; font-size:12px; border-radius:4px; padding:2px 8px; margin-left:6px; }
+.owner-tag.green { background:#eaf7ec; color:#1e6b2e; }
+.owner-tag.yellow { background:#fff7e6; color:#8a5a00; }
+.owner-tag.estate { background:#a12622; color:#fff; font-weight:700; }
+.v.a-good { color:#1e6b2e; }
+.v.a-warn { color:#a12622; font-weight:600; }
+.v.a-hot { color:#8a5a00; font-weight:600; background:#fff7e6; border-radius:4px; padding:1px 6px; }
+.acris-small { font-size:11.5px; color:#aab0b8; padding:2px 0; }
+.sumtab { width:100%; border-collapse:collapse; font-size:13.5px; }
+.sumtab th { font-size:11px; color:#8a919c; font-weight:600; text-transform:uppercase;
+             letter-spacing:.5px; text-align:right; padding:0 0 6px; }
+.sumtab th:first-child { text-align:left; }
+.sumtab td { padding:5px 0; border-top:1px solid #f2f3f5; text-align:right;
+             font-variant-numeric:tabular-nums; }
+.sumtab td:first-child { text-align:left; color:#5c6570; }
+.sumtab td.open-hit { color:#a12622; font-weight:700; }
+.bislink { font-size:12px; margin-top:10px; word-break:break-all; }
+.bislink a { color:#1250b8; text-decoration:none; }
+.verify { font-size:11px; color:#aab0b8; margin-top:10px; }
+.verify a { color:#7a94c9; text-decoration:none; }
+.verify .vurl { color:#aab0b8; word-break:break-all; }
+.doclink { font-size:11px; color:#7a94c9; text-decoration:none; white-space:nowrap; }
+.footer { font-size:11px; color:#aab0b8; margin-top:16px; padding-top:10px;
+          border-top:1px solid #eceef1; }
+</style></head>
+<body><div class="card" id="card">
+
+  <div class="header">
+    <div class="addr">17-08 149TH STREET</div>
+    <div class="sub">Queens CD 7 · Queens, NY 11357</div>
+    <div class="sub" style="margin-top:8px">
+      <span class="badge">R3A</span><span class="badge red">UNDER DEVELOPMENT</span>
+      <span class="bbl">BBL 4046500025</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Identity</div>
+    <div class="row"><span class="k">BBL breakdown</span><span class="v">Queens (4) / Block 4650 / Lot 25</span></div>
+    <div class="row"><span class="k">School</span><span class="v">School District 25</span></div>
+    <div class="row"><span class="k">Structures on site</span><span class="v">2 (PLUTO)</span></div>
+    <div class="warnline">⚠ Retained lot from subdivision on 2025-10-29 — sibling lot(s) 4046500026 split off, this lot kept its number</div>
+    <div class="verify">Verify: <a href="https://zola.planning.nyc.gov/l/lot/4/4650/25">ZoLa ↗</a> <span class="vurl">zola.planning.nyc.gov/l/lot/4/4650/25</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Zoning Checks</div>
+    <div class="checks"><div class="chk green"><div class="t">Commercial overlay</div><div class="r">Pass</div></div><div class="chk green"><div class="t">Special district</div><div class="r">Pass</div></div><div class="chk green"><div class="t">Landmark / historic district</div><div class="r">Pass</div></div><div class="chk green"><div class="t">FEMA flood zone</div><div class="r">Pass</div></div></div>
+    
+    <div class="verify">Verify: <a href="https://zola.planning.nyc.gov/l/lot/4/4650/25">ZoLa ↗</a></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Land &amp; Structure</div>
+    <div class="warnline">⚠ Building data per PLUTO 26v1 snapshot. Active demolition/construction filings exist — figures may reflect neither the original nor the new structure.</div>
+    
+      <div class="row"><span class="k">Lot area</span><span class="v">2,500 sqft (25 × 100 ft)</span></div>
+      <div class="row"><span class="k">Lot type</span><span class="v">Interior (5) · Regular lot</span></div>
+      <div class="row"><span class="k">Existing building</span><span class="v">built 1930 · A1 – two-story detached single-family</span></div>
+      <div class="row"><span class="k">Existing scale</span><span class="v">1 unit(s) · 460 sqft · 2.5 floors</span></div>
+    
+    <div class="verify">Verify: <a href="https://zola.planning.nyc.gov/l/lot/4/4650/25">ZoLa ↗</a></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Development Potential</div>
+    <div class="warnline">⚠ Building data per PLUTO 26v1 snapshot. Active demolition/construction filings exist — figures may reflect neither the original nor the new structure.</div>
+    <div class="nums">
+      <div class="num"><div class="big">1,875</div>
+        <div class="lab">allowed sqft<br>2,500 × FAR 0.75</div></div>
+      <div class="num"><div class="big">460</div>
+        <div class="lab">built sqft<br>builtFAR 0.18</div></div>
+      <div class="num hl"><div class="big">1,415</div><div class="lab">★ unused sqft<br>25% utilized</div></div>
+    </div>
+    
+    <div class="plist"><div><span class="mk no">✗</span><b>① Subdivision</b>&nbsp;&nbsp;Split feasibility: have 25 ft / 2,500 sqft — detached ✗ (needs 2×25 ft / 2×2,375 sqft = 50 ft / 4,750 sqft) (ZR 23-11)</div><div><span class="mk ok">✓</span><b>② Dwelling type</b>&nbsp;&nbsp;R3A allows 2 dwelling unit(s) per lot (detached / zero lot line) (ZR 22-121/22-122)</div><div><span class="mk q">→</span><b>③ Unit multiplication</b>&nbsp;&nbsp;now 1 unit(s) → potential = 1 lot × 2 unit(s)/lot = 2 unit(s)</div><div><span class="mk q">◐</span><b>④ ADU potential</b>&nbsp;&nbsp;May apply: each 1–2 family residence may add one ADU ≤800 sqft; counts toward FAR, counts as a dwelling unit, 0 parking required (ZR 12-10 / 25-232). Conditional on: owner-occupancy (the lot must be the owner's primary residence when the ADU is first occupied); backyard type only if the lot sits inside the Greater Transit Zone (R3A bans backyard ADUs beyond the GTZ); not inside a DEP flood-risk area (which would ban cellar and backyard types — check the map)</div></div>
+    <div class="verify">Verify: <a href="https://zola.planning.nyc.gov/l/lot/4/4650/25">ZoLa ↗</a> · <a href="https://zr.planning.nyc.gov/article-ii/chapter-3/23-11">ZR 23-11 ↗</a> · <a href="https://zr.planning.nyc.gov/article-ii/chapter-2/22-121">ZR 22-121 ↗</a> · <a href="https://zr.planning.nyc.gov/article-ii/chapter-2/22-122">ZR 22-122 ↗</a> · <a href="https://zr.planning.nyc.gov/article-i/chapter-2/12-10">ZR 12-10 ↗</a> · <a href="https://zr.planning.nyc.gov/article-ii/chapter-5/25-232">ZR 25-232 ↗</a></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Sales History</div>
+    <div class="row"><span class="k">Last transfer</span><span class="v ">2025-05-28 · $950,000 · held 1.2 years to date <a class="doclink" href="https://a836-acris.nyc.gov/DS/DocumentSearch/DocumentDetail?doc_id=2025060900980001">DEED ↗</a></span></div><div class="row"><span class="k">Seller → buyer</span><span class="v a-hot">Estate/Executor (ESTATE OF EDWARD J. ROHL, DANIEL LEHMANN, AS EXECUTOR) → Entity (1708 149ST LLC)</span></div><div class="row"><span class="k">Current debt</span><span class="v a-warn">⚠ $665,000 unsatisfied (MTGE 2025-05-28) <a class="doclink" href="https://a836-acris.nyc.gov/DS/DocumentSearch/DocumentDetail?doc_id=2025060900980002">MTGE 2025-05-28 ↗</a></span></div><div class="row"><span class="k">Risk signal</span><span class="v a-good">no LIS PENDENS ✓</span></div><div class="row"><span class="k">Transaction pulse</span><span class="v ">5 instrument(s) in the past 10 years</span></div><div class="acris-small">plus 11 microfilm-era instrument(s) — deep title history</div><div class="row"><span class="k">Bargaining leverage</span><span class="v ">Low — held 1.2 years but $665,000 still unsatisfied — floor roughly ≥ $950,000 (acquired via estate sale 2025-05-28 — seller-side signal spent at that transfer)</span></div>
+    <div class="verify">Verify: <a href="https://a836-acris.nyc.gov/DS/DocumentSearch/Index">ACRIS search ↗</a> <span class="vurl">a836-acris.nyc.gov/DS/DocumentSearch/Index</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Construction Activity</div>
+    <div class="dob-banner">⚠ Active development on this lot</div><div class="dob-item">New Building · filed 2025-07-26 · Plan Examiner Review · 3,584 sqft · 7 filings</div><div class="dob-item">Full Demolition · filed 2025-07-26 · Permit Entire · cost $15,000 · 250 sqft · 2 filings</div><div class="dob-item">Full Demolition · filed 2025-07-26 · Permit Entire · cost $45,000 · 1,381 sqft</div><div class="dob-item">Alteration · filed 2025-06-22 · Permit Entire · cost $5,000 · 300 sqft</div><div class="dob-item">Alteration Type 3 · filed 2026-06-24 · PERMIT ISSUED - ENTIRE JOB/WORK · "FILE BPP FOR 25 LINEAR FEET IN CONJUNCTION WITH DOB JOB#Q012" · [BIS]</div><div class="acris-small">→ Conditions on the ground may differ from the PLUTO record above</div><div class="row"><span class="k">Violations</span><span class="v a-good">no open violations ✓</span></div>
+    <div class="verify">Verify: <a href="https://a810-dobnow.nyc.gov/publish/Index.html">DOB NOW Portal (search BIN 4105310) ↗</a> <span class="vurl">a810-dobnow.nyc.gov/publish/Index.html</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">DOB Summary</div>
+    <table class="sumtab">
+      <tr><th>Metric</th><th>Total</th><th>Open</th></tr>
+      <tr><td>Complaints</td><td>1</td><td class="open-hit">1</td></tr><tr><td>Violations – DOB</td><td>0</td><td class="">0</td></tr><tr><td>Violations – OATH/ECB</td><td>0</td><td class="">0</td></tr><tr><td>Filings — DOB NOW</td><td>11 (4 projects)</td><td class="">—</td></tr><tr><td>Jobs — BIS</td><td>2</td><td class="">—</td></tr><tr><td>Unpaid ECB balance</td><td>$0</td><td class="">—</td></tr>
+    </table>
+    <div class="acris-small">BIS-only metrics (Actions, ARA/LAA) are not published as open data — see BIS link below.</div><div class="acris-small">Additional structures: BIN 4481884</div><div class="verify">Verify: <a href="https://a810-bisweb.nyc.gov/bisweb/PropertyProfileOverviewServlet?bin=4105310">DOB BIS ↗</a> <span class="vurl">a810-bisweb.nyc.gov/bisweb/PropertyProfileOverviewServlet?bin=4105310</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Ownership</div>
+    <div class="row"><span class="k">Owner</span><span class="v">1708 149ST LLC<span class="owner-tag yellow">Likely developer-held</span></span></div>
+    <div class="row"><span class="k">Assessed value</span>
+      <span class="v">land $8,070 · total $25,850</span></div>
+    <div class="verify">Verify: <a href="https://propertyinformationportal.nyc.gov/parcels/parcel/4046500025">DOF Property Portal ↗</a> <span class="vurl">propertyinformationportal.nyc.gov/parcels/parcel/4046500025</span> · <a href="https://a836-acris.nyc.gov/DS/DocumentSearch/Index">ACRIS search ↗</a></div>
+  </div>
+
+  <div class="footer">Sources: NYC GeoSearch + MapPLUTO 26v1 · ACRIS good through 2026-06-30 · DOB run 2026-07-27 · generated 2026-07-28<br>
+    Datasets: <a href="https://data.cityofnewyork.us/d/64uk-42ks">PLUTO ↗</a> · <a href="https://data.cityofnewyork.us/d/8h5j-fqxa">ACRIS Legals ↗</a> · <a href="https://data.cityofnewyork.us/d/bnx9-e6tj">ACRIS Master ↗</a> · <a href="https://data.cityofnewyork.us/d/636b-3b5g">ACRIS Parties ↗</a> · <a href="https://data.cityofnewyork.us/d/w9ak-ipjd">DOB NOW ↗</a> · <a href="https://data.cityofnewyork.us/d/eabe-havv">Complaints ↗</a> · <a href="https://data.cityofnewyork.us/d/6bgk-3dad">ECB ↗</a></div>
+
+</div></body></html>
