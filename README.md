@@ -2,6 +2,8 @@
 
 **Type any Queens address, get a one-page investment "lot card" in ~30 seconds — built entirely on free NYC Open Data, every number linked back to its official source.**
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://queens-lot-card.streamlit.app)  **Try it in your browser — no install, no API keys.**
+
 Built for a small Queens developer whose business is low-density teardowns: buy an old house → demolish → subdivide if the zoning allows → build two-family homes → sell. The card answers the five questions that deal screening starts with: *what can legally be built here, what is already there, what did the current owner pay and owe, who is pulling permits nearby, and how motivated is the seller?*
 
 <p align="center">
@@ -27,6 +29,10 @@ Every section ends with a grey **Verify ↗** line linking to ZoLa, the ZR text,
 
 ## Quick start
 
+**Online:** open [queens-lot-card.streamlit.app](https://queens-lot-card.streamlit.app), pick an example or type an address, click *Generate card*. (Free tier: the app sleeps when idle and takes ~30 s to wake.)
+
+**Locally (CLI, adds PNG/PDF output):**
+
 ```bash
 git clone https://github.com/charleschaohu-hash/queens-lot-card.git
 cd queens-lot-card
@@ -35,6 +41,8 @@ playwright install chromium          # optional, for PNG/PDF output
 
 python3 src/lot_card.py "17-08 149th St, Queens, NY"
 python3 src/lot_card.py "17-08 149th St, Queens, NY" --fresh   # bypass cache
+
+streamlit run app.py                 # same pipeline behind a local web UI
 ```
 
 No API keys needed — all seven datasets are public NYC Open Data / Socrata endpoints. Output lands in `cards/{BBL}_{slug}.{md,html,png,pdf}` (a PDF copy also goes to `~/Desktop/地块档案卡/`). Raw API responses are cached per BBL under `cache/` so re-runs are instant and every figure can be traced to its JSON.
@@ -44,6 +52,7 @@ Run the subdivision-rule unit tests with `python3 tests/test_split.py`.
 ## How it's built
 
 ```
+app.py            Streamlit front end: address box → build_card() → HTML card + downloads
 src/lot_card.py   address → BBL → PLUTO → rules → ACRIS → DOB → render (md/html/png/pdf)   ~1,400 lines
 src/rules.py      zoning rule table for R1–R5 districts, each value tagged with its ZR section
 src/acris.py      three-table ACRIS chain, legacy-document routing, mortgage ↔ satisfaction matching, party classifier

@@ -188,7 +188,19 @@ def save_address_index(idx):
         json.dumps(idx, ensure_ascii=False, indent=2))
 
 
-def geosearch(address: str, fresh: bool):
+class LotCardError(Exception):
+    """Recoverable pipeline failure (bad address, empty result). CLI prints and exits."""
+
+
+class AmbiguousAddress(LotCardError):
+    """Several equally-confident BBL candidates and no prior choice on file.
+    `candidates` is a list of (bbl, label); re-run with choice_bbl=<bbl>."""
+    def __init__(self, candidates):
+        super().__init__("ambiguous address")
+        self.candidates = candidates
+
+
+def geosearch(address: str, fresh: bool, choice_bbl: str = None, interactive: bool = False):
     """GeoSearch 拿 BBL。返回 (bbl, bin_count, geo_bins, geo_feature)
     geo_bins：本 BBL 名下的 BIN 列表，首选结果的 BIN 排第一（供 DOB 投诉查询
     与 BIS 链接用）。含区级占位 BIN（4000000）——由 dob.is_real_bin 过滤。"""
@@ -210,8 +222,7 @@ def geosearch(address: str, fresh: bool):
 
     features = data.get("features") or []
     if not features:
-        print("  ✗ GeoSearch returned no result — check the address spelling")
-        sys.exit(1)
+        raise LotCardError("GeoSearch returned no result — check the address spelling")
 
     def feat_bbl(f):
         # ⚠ BBL 必须从 addendum.pad.bbl 取（顶层 pad_bbl 是 null）
@@ -236,7 +247,7 @@ def geosearch(address: str, fresh: bool):
     if len(distinct_bbls) > 1:
         # A1: 既往选择（address_index）优先短路——重跑绝不换标的。
         # 要重选：删掉 cache/address_index.json 里对应条目再交互跑一次。
-        known = idx.get(slug)
+        known = choice_bbl or idx.get(slug)
         if known and any(feat_bbl(f) == known for f in features):
             chosen = next(f for f in features if feat_bbl(f) == known)
             print(f"  [index] prior BBL choice {known} honored "
@@ -249,7 +260,7 @@ def geosearch(address: str, fresh: bool):
                 label = (f.get("properties") or {}).get("label", "?")
                 cands.append((b, f))
                 print(f"    [{len(cands)}] BBL {b}  {label}")
-            if sys.stdin.isatty():
+            if interactive and sys.stdin.isatty():
                 try:
                     pick = int(input("  choose [1-{}]: ".format(len(cands))))
                 except (ValueError, EOFError):
@@ -258,14 +269,13 @@ def geosearch(address: str, fresh: bool):
                 chosen = cands[pick - 1][1]
             else:
                 # A1: 非交互 + 无既往选择 → 宁可停下来，不可换标的
-                print("  ✗ ambiguous address with no prior choice on file — "
-                      "run once interactively to confirm the candidate")
-                sys.exit(2)
+                raise AmbiguousAddress([
+                    (b, (f.get("properties") or {}).get("label", "?"))
+                    for b, f in cands])
 
     bbl = feat_bbl(chosen)
     if not bbl:
-        print("  ✗ chosen candidate has no BBL (addendum.pad.bbl empty)")
-        sys.exit(1)
+        raise LotCardError("chosen candidate has no BBL (addendum.pad.bbl empty)")
 
     # 一地多楼检测：统计同 BBL 候选的不同 BIN 数；首选结果的 BIN 排第一
     geo_bins, seen = [], set()
@@ -1281,23 +1291,24 @@ def render_png_pdf(html_path: Path, png_path: Path, pdf_path: Path):
 
 # ---------- 主流程 ----------
 
-def main():
-    ap = argparse.ArgumentParser(description="Queens lot profile card generator")
-    ap.add_argument("address", help='address, e.g. "17-08 149th St, Queens, NY"')
-    ap.add_argument("--fresh", action="store_true", help="bypass cache and refetch")
-    args = ap.parse_args()
+def build_card(address: str, fresh: bool = False, choice_bbl: str = None,
+               interactive: bool = False) -> dict:
+    """Full pipeline: address → BBL → PLUTO → rules → ACRIS → DOB → context dict.
+    Pure data; no files written except the API cache. Raises LotCardError /
+    AmbiguousAddress on recoverable problems. Render with render_md / render_html."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-    for d in (CACHE_DIR, CARDS_DIR, DESKTOP_DIR):
-        d.mkdir(parents=True, exist_ok=True)
-
-    print(f"▶ {args.address}")
-    bbl, bin_count, geo_bins, geo = geosearch(args.address, args.fresh)
+    print(f"▶ {address}")
+    bbl, bin_count, geo_bins, geo = geosearch(address, fresh, choice_bbl=choice_bbl,
+                                              interactive=interactive)
     print(f"  BBL = {bbl}")
-    pluto = fetch_pluto(bbl, args.fresh)
+    pluto = fetch_pluto(bbl, fresh)
 
-    c = build_context(args.address, bbl, bin_count, pluto, fresh=args.fresh)
-    c["acris"] = acris.get_history(bbl, args.fresh)
-    c["dob"] = dob.get_activity(bbl, args.fresh, geo_bins=geo_bins)
+    c = build_context(address, bbl, bin_count, pluto, fresh=fresh)
+    c["bbl"] = bbl
+    c["input_address"] = address
+    c["acris"] = acris.get_history(bbl, fresh)
+    c["dob"] = dob.get_activity(bbl, fresh, geo_bins=geo_bins)
     c["bis_url"] = dob.bis_url(c["dob"], address=c["address"], boro_num=c["borough_code"])
 
     # O2: 权属双源——ACRIS 最新 DEED 买方为主、PLUTO 名册为辅，不一致时并列
@@ -1323,7 +1334,7 @@ def main():
         mother = str(int(float(appbbl)))
         if mother != bbl and len(mother) == 10:
             print(f"  no instruments for this lot — falling back to parent lot {mother}")
-            mother_sig = acris.get_history(mother, args.fresh)
+            mother_sig = acris.get_history(mother, fresh)
             if not mother_sig.get("no_records") and not mother_sig.get("error"):
                 mother_sig["from_mother"] = mother
                 c["acris"] = mother_sig
@@ -1332,8 +1343,11 @@ def main():
     owner_now = (c["owner_dual"]["acris_names"] if c.get("owner_dual")
                  else c["ownername"])
     acris.apply_owner_context(c["acris"], owner_now)
+    return c
 
-    # 终端摘要
+
+def print_summary(c):
+    """终端摘要"""
     print(f"  zoning {c['zone']} · {c['school_label']} · "
           f"lot {fmt_num(c['lotarea'])} sqft ({fmt_num(c['lotfront'])}×{fmt_num(c['lotdepth'])} ft)")
     if c["subdiv_warn"]:
@@ -1381,8 +1395,13 @@ def main():
         print(f"  Ownership: {c['ownername']} → {c['owner_tag']}")
     print(f"  {source_line(c)}")
 
-    # 输出文件（O3：一地一套卡——清理同 BBL 的旧 slug 文件）
-    slug = slugify(args.address)
+
+def write_outputs(c, address: str):
+    """输出文件（O3：一地一套卡——清理同 BBL 的旧 slug 文件）"""
+    for d in (CARDS_DIR, DESKTOP_DIR):
+        d.mkdir(parents=True, exist_ok=True)
+    bbl = c["bbl"]
+    slug = slugify(address)
     base = CARDS_DIR / f"{bbl}_{slug}"
     for old in list(CARDS_DIR.glob(f"{bbl}_*")):
         if old.stem != base.name:
@@ -1414,6 +1433,29 @@ def main():
     if pdf_ok:
         print(f"    ~/Desktop/地块档案卡/{pdf_path.name}")
     print()
+    return outputs
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Queens lot profile card generator")
+    ap.add_argument("address", help='address, e.g. "17-08 149th St, Queens, NY"')
+    ap.add_argument("--fresh", action="store_true", help="bypass cache and refetch")
+    args = ap.parse_args()
+
+    try:
+        c = build_card(args.address, fresh=args.fresh, interactive=True)
+    except AmbiguousAddress as e:
+        print("  ⚠ multiple distinct BBL candidates:")
+        for i, (b, label) in enumerate(e.candidates, 1):
+            print(f"    [{i}] BBL {b}  {label}")
+        print("  ✗ ambiguous address with no prior choice on file — "
+              "run once interactively to confirm the candidate")
+        sys.exit(2)
+    except LotCardError as e:
+        print(f"  ✗ {e}")
+        sys.exit(1)
+    print_summary(c)
+    write_outputs(c, args.address)
 
 
 if __name__ == "__main__":

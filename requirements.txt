@@ -1,4 +1,6 @@
 requests>=2.31
-# Optional renderers (the tool falls back gracefully if missing):
-playwright>=1.45        # PNG + PDF via headless Chromium: run `playwright install chromium` once
-weasyprint>=62          # PDF-only fallback when playwright is unavailable
+streamlit>=1.36,<2
+
+# Optional, CLI only — for PNG/PDF output (the web app renders HTML directly):
+#   pip install playwright && playwright install chromium
+#   or: pip install weasyprint   (PDF only)
